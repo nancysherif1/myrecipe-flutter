@@ -1,11 +1,12 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:my_recipe_front/screens/home_screen.dart';
-  import 'screens/login_screen.dart'; // Import your LoginScreen here.
+import 'package:my_recipe_front/screens/login_screen.dart';
+import 'package:my_recipe_front/screens/order_screen.dart';
+import 'package:my_recipe_front/screens/menu_details_screen.dart';
 
-  void main() {
-    runApp(const MyApp());
-  }
-
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -22,8 +23,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
+        '/menuDetails': (context) => const MenuDetailsScreen(),
+        '/orders': (context) => const OrderScreen(),
       },
     );
   }
 }
-

@@ -47,9 +47,52 @@ class LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return; // Ensure widget is still in the tree before using context
 
-      if (response.statusCode == 200) {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
+if (response.statusCode == 200) {
+  final token = jsonDecode(response.body)['token'];
+  final headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json',
+  };
+
+  // Try vendor orders API
+  final vendorResponse = await http.get(
+    Uri.parse('http://127.0.0.1:8000/api/vendor/orders/'),
+    headers: headers,
+  );
+
+  if (!mounted) return;
+
+  if (vendorResponse.statusCode == 200) {
+    // Vendor: Navigate to Order Screen
+    Navigator.pushReplacementNamed(context, '/orders', arguments: token);
+  } else {
+    // If not vendor, try loading customer menus
+    final customerMenuResponse = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/customer/menus/'),
+      headers: headers,
+    );
+
+    if (!mounted) return;
+
+    if (customerMenuResponse.statusCode == 200) {
+      final menus = jsonDecode(customerMenuResponse.body);
+      // Customer: Navigate to Home with menu data
+      Navigator.pushReplacementNamed(
+        context,
+        '/home',
+        arguments: {
+          'token': token,
+          'menus': menus,
+        },
+      );
+    } else {
+      // Failed to fetch menus
+      setState(() {
+        _errorMessage = 'Login successful, but failed to load menus.';
+      });
+    }
+  }
+} else {
         setState(() {
           _errorMessage = "Invalid username or password";
         });
@@ -80,7 +123,7 @@ class LoginScreenState extends State<LoginScreen> {
             Text(
               'MY RECIPE',
               style: TextStyle(
-                fontSize: 50,
+                fontSize: 32,
                 color: Colors.white,
                 letterSpacing: 15.0,
                 fontFamily: 'Roboto',
@@ -89,9 +132,9 @@ class LoginScreenState extends State<LoginScreen> {
             Text(
               'INGREDIENTS TO GO',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.white70,
-                letterSpacing: 15.0,
+                letterSpacing: 10.0,
               ),
             ),
           ],
@@ -104,7 +147,7 @@ class LoginScreenState extends State<LoginScreen> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/image1.jpg'),
+                image: AssetImage('assets/images/image2.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
