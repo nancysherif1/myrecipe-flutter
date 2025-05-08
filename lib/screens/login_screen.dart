@@ -147,7 +147,7 @@ if (response.statusCode == 200) {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/image2.jpg'),
+                image: AssetImage('assets/images/image3.jpeg'),
                 fit: BoxFit.cover,
               ),
             ),

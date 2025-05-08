@@ -1,4 +1,3 @@
-// order_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -57,6 +56,19 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
+String formatTime(String isoString) {
+  try {
+    final dateTime = DateTime.parse(isoString).toLocal();
+    final hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+    final ampm = dateTime.hour >= 12 ? 'PM' : 'AM';
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $ampm';
+  } catch (e) {
+    return '';
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +83,54 @@ class _OrderScreenState extends State<OrderScreen> {
                       itemCount: _orders.length,
                       itemBuilder: (context, index) {
                         final order = _orders[index];
-                        return ListTile(
-                          title: Text('Order #${order['orderId']} - ${order['status']}'),
-                          subtitle: Text('${order['customerName']} - \$${order['totalOrderPrice']}'),
+                        final customerName = order['customerName'] ?? 'Customer';
+                        final orderId = order['orderId'] ?? '';
+                        final totalPrice = order['totalOrderPrice']?.toStringAsFixed(2) ?? '0.00';
+                        final orderDate = order['orderDate'] ?? '';
+                        final time = formatTime(orderDate);
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: index == 0 ? Colors.red : Colors.transparent,
+                              width: 1,
+                            ),
+                          ),
+                          elevation: 2,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              radius: 24,
+                              backgroundColor: Colors.orange,
+                              child: Text(
+                                customerName.isNotEmpty ? customerName[0].toUpperCase() : 'C',
+                                style: const TextStyle(color: Colors.white, fontSize: 20),
+                              ),
+                            ),
+                            title: Text(
+                              'Order #$orderId',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(order['description'] ?? 'No details provided'),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '\$$totalPrice',
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: Text(
+                              time,
+                              style: const TextStyle(color: Colors.grey, fontSize: 12),
+                            ),
+                          ),
                         );
                       },
                     ),
