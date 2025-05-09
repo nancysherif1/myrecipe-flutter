@@ -29,7 +29,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Future<void> _fetchOrders(String token) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/vendor/orders/');
+    final url = Uri.parse('http://127.0.0.1:8000/api/vendor/orders/');  
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
@@ -99,37 +99,41 @@ String formatTime(String isoString) {
                             ),
                           ),
                           elevation: 2,
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 24,
-                              backgroundColor: Colors.orange,
-                              child: Text(
-                                customerName.isNotEmpty ? customerName[0].toUpperCase() : 'C',
-                                style: const TextStyle(color: Colors.white, fontSize: 20),
-                              ),
-                            ),
-                            title: Text(
-                              'Order #$orderId',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(order['description'] ?? 'No details provided'),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '\$$totalPrice',
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            trailing: Text(
-                              time,
-                              style: const TextStyle(color: Colors.grey, fontSize: 12),
-                            ),
+child: ListTile(
+  leading: CircleAvatar(
+    radius: 24,
+    backgroundColor: Colors.orange,
+    child: Text(
+      customerName.isNotEmpty ? customerName[0].toUpperCase() : 'C',
+      style: const TextStyle(color: Colors.white, fontSize: 20),
+    ),
+  ),
+  title: Text(
+    'Order #$orderId',
+    style: const TextStyle(fontWeight: FontWeight.bold),
+  ),
+  subtitle: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(order['description'] ?? 'No details provided'),
+      const SizedBox(height: 4),
+      Text(
+        '\$$totalPrice',
+        style: const TextStyle(
+          color: Colors.green,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  ),
+  trailing: Text(
+    time,
+    style: const TextStyle(color: Colors.grey, fontSize: 12),
+  ),
+  onTap: () {
+    Navigator.pushNamed(context, '/orderDetails', arguments: order);
+  },
+
                           ),
                         );
                       },

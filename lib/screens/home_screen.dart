@@ -18,14 +18,22 @@ class HomeScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Color(0xFF4A0D1F),
               ),
-              child: CircleAvatar(
-              radius: 24, // Smaller circle
-              backgroundColor: Colors.orange,
-              child: Text(
-                'N',
-                style: TextStyle(fontSize: 18, color: Colors.white), // Smaller text
-              ),
-            ),            ),
+                    child: Center( // Center aligns the CircleAvatar properly
+        child: SizedBox(
+          width: 70, // Explicit width constraint
+          height: 70, // Explicit height constraint
+          child: CircleAvatar(
+            radius: 24, // Enforcing a smaller circle
+            backgroundColor: Colors.orange,
+            child: Text(
+              'N',
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    ),
+
             _buildDrawerItem('Home Page', Icons.home, () {
               Navigator.pop(context); // Just close drawer
             }),
@@ -33,10 +41,9 @@ class HomeScreen extends StatelessWidget {
             _buildDrawerItem('Favorite', Icons.favorite, () {}),
             _buildDrawerItem('Recent Orders', Icons.history, () {}),
             const Divider(color: Colors.white54),
-            _buildDrawerItem('Sign Out', Icons.logout, () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-              Navigator.pushReplacementNamed(context, '/login');
-            }),
+           _buildDrawerItem('Sign Out', Icons.logout, () {
+            Navigator.pushReplacementNamed(context, '/');
+          }),
           ],
         ),
       ),
@@ -96,7 +103,6 @@ class HomeScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           clipBehavior: Clip.antiAlias,
                           child: Stack(
-                            alignment: Alignment.bottomLeft,
                             children: [
                               SizedBox(
                                 height: 180,
@@ -106,16 +112,32 @@ class HomeScreen extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              Container(
-                                width: double.infinity,
-                                color: const Color(0xFF000000).withAlpha(120),
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  menu['menuName'] ?? 'Unnamed Menu',
-                                  style: const TextStyle(
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(6),
+                                  child: const Icon(Icons.shopping_cart, color: Colors.black87, size: 20),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  color: const Color(0xFF000000).withAlpha(120),
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    menu['menuName'] ?? 'Unnamed Menu',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),

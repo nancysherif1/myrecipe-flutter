@@ -242,6 +242,21 @@ if (response.statusCode == 200) {
                 const SizedBox(height: 10),
                 Center(
                   child: TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/signupChoice');
+                    },
+                    child: const Text(
+                      'Don\'t have an account? Sign Up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: TextButton(
                     onPressed: () {},
                     child: const Text(
                       'Forgot Password?',
