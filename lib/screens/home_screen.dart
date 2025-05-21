@@ -1,78 +1,150 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final List<dynamic> vendors = args?['menus'] ?? [];
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  late List<dynamic> vendors;
+  List<dynamic> filteredVendors = [];
+  bool isSearching = false;
+  final TextEditingController searchController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
+
+  final Map<String, String> _imageCache = {}; // Cache image paths
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    vendors = args?['menus'] ?? [];
+    filteredVendors = vendors;
+  }
+
+  void updateSearch(String query) {
+    setState(() {
+      filteredVendors = vendors
+          .where((vendor) => (vendor['vendorName'] ?? '')
+              .toString()
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  Future<String> getImagePathForVendor(String vendorName) async {
+    if (_imageCache.containsKey(vendorName)) {
+      return _imageCache[vendorName]!;
+    }
+
+    final assetPath = 'assets/images/$vendorName.jpg';
+    try {
+      await DefaultAssetBundle.of(context).load(assetPath);
+      _imageCache[vendorName] = assetPath;
+      return assetPath;
+    } catch (e) {
+      _imageCache[vendorName] = 'assets/images/menu3.jpg';
+      return 'assets/images/menu3.jpg';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        backgroundColor: const Color(0xFF4A0D1F), // Dark red/maroon
+        backgroundColor: const Color(0xFF4A0D1F),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFF4A0D1F),
+              decoration: BoxDecoration(color: Color(0xFF4A0D1F)),
+              child: Center(
+                child: SizedBox(
+                  width: 70,
+                  height: 70,
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.orange,
+                    child: Text('N', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  ),
+                ),
               ),
-                    child: Center( // Center aligns the CircleAvatar properly
-        child: SizedBox(
-          width: 70, // Explicit width constraint
-          height: 70, // Explicit height constraint
-          child: CircleAvatar(
-            radius: 24, // Enforcing a smaller circle
-            backgroundColor: Colors.orange,
-            child: Text(
-              'N',
-              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
-          ),
-        ),
-      ),
-    ),
-
             _buildDrawerItem('Home Page', Icons.home, () {
-              Navigator.pop(context); // Just close drawer
+              Navigator.pop(context);
             }),
-            _buildDrawerItem('Setting', Icons.settings, () {}),
-            _buildDrawerItem('Favorite', Icons.favorite, () {}),
-            _buildDrawerItem('Recent Orders', Icons.history, () {}),
+            _buildDrawerItem('Favorite', Icons.favorite, () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/favorites');
+            }),
+            _buildDrawerItem('Cart', Icons.shopping_cart, () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/cart');
+            }),
+            _buildDrawerItem('Recent Orders', Icons.history, () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/recentOrders');
+            }),
             const Divider(color: Colors.white54),
-           _buildDrawerItem('Sign Out', Icons.logout, () {
-            Navigator.pushReplacementNamed(context, '/');
-          }),
+            _buildDrawerItem('Sign Out', Icons.logout, () {
+              Navigator.pushReplacementNamed(context, '/');
+            }),
           ],
         ),
       ),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF4A0D1F), // Maroon color
-          centerTitle: true,
-          iconTheme: const IconThemeData(color: Colors.white), // Makes the drawer (toggle) icon white
-          title: const Text(
-            'MY RECIPE',
-            style: TextStyle(
-              color: Colors.white, // Makes title text white
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-            ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF4A0D1F),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: isSearching
+            ? TextField(
+                controller: searchController,
+                focusNode: focusNode,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: 'Search vendors...',
+                  hintStyle: TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: updateSearch,
+              )
+            : const Text(
+                'MY RECIPE',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+        actions: [
+          IconButton(
+            icon: Icon(isSearching ? Icons.close : Icons.search, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                if (isSearching) {
+                  searchController.clear();
+                  filteredVendors = vendors;
+                }
+                isSearching = !isSearching;
+              });
+              if (!isSearching) {
+                focusNode.unfocus();
+              } else {
+                focusNode.requestFocus();
+              }
+            },
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.search, color: Colors.white),
-              onPressed: () {},
-            ),
-          ],
-        ),
-
-      body: vendors.isEmpty
-          ? const Center(child: Text('No menu items available.'))
+        ],
+      ),
+      body: filteredVendors.isEmpty
+          ? const Center(child: Text('No matching vendors found.'))
           : ListView.builder(
-              itemCount: vendors.length,
+              itemCount: filteredVendors.length,
               itemBuilder: (context, vendorIndex) {
-                final vendor = vendors[vendorIndex];
+                final vendor = filteredVendors[vendorIndex];
                 final vendorName = vendor['vendorName'] ?? 'Unknown Vendor';
                 final menus = vendor['menus'] as List<dynamic>? ?? [];
 
@@ -80,7 +152,8 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(
                         vendorName,
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -92,36 +165,44 @@ class HomeScreen extends StatelessWidget {
                           Navigator.pushNamed(
                             context,
                             '/menuDetails',
-                            arguments: {
-                              'vendorName': vendorName,
-                              'menu': menu,
-                            },
+                            arguments: {'vendorName': vendorName, 'menu': menu},
                           );
                         },
                         child: Card(
                           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           clipBehavior: Clip.antiAlias,
                           child: Stack(
                             children: [
                               SizedBox(
                                 height: 180,
                                 width: double.infinity,
-                                child: Image.asset(
-                                  'assets/images/menu1.jpg',
-                                  fit: BoxFit.cover,
+                                child: FutureBuilder<String>(
+                                  future: getImagePathForVendor(vendorName),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    }
+                                    final imagePath = snapshot.data ?? 'assets/images/menu1.jpg';
+                                    return Image.asset(
+                                      imagePath,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
                               Positioned(
                                 top: 8,
                                 right: 8,
                                 child: Container(
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
                                   padding: const EdgeInsets.all(6),
-                                  child: const Icon(Icons.shopping_cart, color: Colors.black87, size: 20),
+                                  child: const Icon(Icons.shopping_cart,
+                                      color: Colors.black87, size: 20),
                                 ),
                               ),
                               Positioned(

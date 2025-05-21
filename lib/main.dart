@@ -7,7 +7,9 @@ import 'package:my_recipe_front/screens/order_details_screen.dart';
 import 'package:my_recipe_front/screens/client_register_screen.dart';
 import 'package:my_recipe_front/screens/chief_register_screen.dart';
 import 'package:my_recipe_front/screens/signup_choice_screen.dart';
-
+import 'package:my_recipe_front/screens/favorite_screen.dart';
+import 'package:my_recipe_front/screens/recent_orders_screen.dart';
+import 'package:my_recipe_front/screens/cart_screen.dart'; // Ensure this file exists and contains CartScreen class
 void main() {
   runApp(const MyApp());
 }
@@ -31,8 +33,11 @@ class MyApp extends StatelessWidget {
         '/orders': (context) => const OrderScreen(),
         '/orderDetails': (context) => const OrderDetailsScreen(),
         '/signupChoice': (context) => const SignupChoiceScreen(),
-  '/registerClient': (context) => const ClientRegisterScreen(),
-  '/registerChief': (context) => const ChiefRegisterScreen(),
+        '/registerClient': (context) => const ClientRegisterScreen(),
+        '/registerChief': (context) => const ChiefRegisterScreen(),
+        '/favorites': (context) => const FavoriteScreen(),
+'/recentOrders': (context) => const RecentOrdersScreen(),
+        '/cart': (context) => const CartScreen(), // Make sure CartScreen is defined as a class in cart_screen.dart
       },
     );
   }
