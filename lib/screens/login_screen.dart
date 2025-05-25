@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,6 +50,11 @@ class LoginScreenState extends State<LoginScreen> {
 
 if (response.statusCode == 200) {
   final token = jsonDecode(response.body)['token'];
+
+  // ✅ Save the token for future use
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('token', token);
+
   final headers = {
     'Authorization': 'Token $token',
     'Content-Type': 'application/json',
