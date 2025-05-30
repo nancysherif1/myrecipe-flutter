@@ -76,6 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildDrawerItem('Home Page', Icons.home, () {
               Navigator.pop(context);
             }),
+            _buildDrawerItem('Track My Order', Icons.track_changes, () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/trackOrder');
+            }),
             _buildDrawerItem('Favorite', Icons.favorite, () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/favorites');

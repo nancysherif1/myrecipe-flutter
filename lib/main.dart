@@ -10,6 +10,7 @@ import 'package:my_recipe_front/screens/signup_choice_screen.dart';
 import 'package:my_recipe_front/screens/favorite_screen.dart';
 import 'package:my_recipe_front/screens/recent_orders_screen.dart';
 import 'package:my_recipe_front/screens/cart_screen.dart'; // Ensure this file exists and contains CartScreen class
+import 'package:my_recipe_front/screens/track_order_screen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'My Recipe',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
         '/registerChief': (context) => const ChiefRegisterScreen(),
         '/favorites': (context) => const FavoriteScreen(),
 '/recentOrders': (context) => const RecentOrdersScreen(),
-        '/cart': (context) => const CartScreen(), // Make sure CartScreen is defined as a class in cart_screen.dart
+        '/cart': (context) => const CartScreen(), 
+        '/trackOrder': (context) => const TrackOrderScreen(),
       },
     );
   }

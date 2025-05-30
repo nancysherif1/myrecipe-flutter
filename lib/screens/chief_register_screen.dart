@@ -31,6 +31,7 @@ class _ChiefRegisterScreenState extends State<ChiefRegisterScreen> {
     });
 
     final url = Uri.parse('http://127.0.0.1:8000/api/register/vendor/');
+    // final url = Uri.parse('http://172.20.10.3:8000/api/register/vendor/');
 
     final body = {
       "user": {

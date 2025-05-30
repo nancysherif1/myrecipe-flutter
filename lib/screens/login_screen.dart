@@ -38,7 +38,7 @@ class LoginScreenState extends State<LoginScreen> {
 
     //For Web
     final Uri url = Uri.parse('http://127.0.0.1:8000/api/login/');
-    // final Uri url = Uri.parse('http://0.0.0.0:8000//api/login/');
+    // final Uri url = Uri.parse('http://172.20.10.3:8000/api/login/');
     try {
       final response = await http.post(
         url,
@@ -63,6 +63,7 @@ if (response.statusCode == 200) {
   // Try vendor orders API
   final vendorResponse = await http.get(
     Uri.parse('http://127.0.0.1:8000/api/vendor/orders/'),
+    // Uri.parse('http://172.20.10.3:8000/api/vendor/orders/'),
     headers: headers,
   );
 
@@ -75,6 +76,7 @@ if (response.statusCode == 200) {
     // If not vendor, try loading customer menus
     final customerMenuResponse = await http.get(
       Uri.parse('http://127.0.0.1:8000/api/customer/menus/'),
+      // Uri.parse('http://172.20.10.3:8000/api/customer/menus/'),
       headers: headers,
     );
 
@@ -117,55 +119,57 @@ if (response.statusCode == 200) {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Column(
-          children: [
-            Text(
-              'MY RECIPE',
-              style: TextStyle(
-                fontSize: 32,
-                color: Colors.white,
-                letterSpacing: 15.0,
-                fontFamily: 'Roboto',
-              ),
-            ),
-            Text(
-              'INGREDIENTS TO GO',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white70,
-                letterSpacing: 10.0,
-              ),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        toolbarHeight: 120,
-      ),
-      body: Stack(
+ @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    resizeToAvoidBottomInset: true, // Enable layout adjustment when keyboard appears
+    extendBodyBehindAppBar: true,
+    appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: const Column(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/image3.jpeg'),
-                fit: BoxFit.cover,
-              ),
+          Text(
+            'MY RECIPE',
+            style: TextStyle(
+              fontSize: 32,
+              color: Colors.white,
+              letterSpacing: 15.0,
+              fontFamily: 'Roboto',
             ),
-            width: double.infinity,
-            height: double.infinity,
           ),
-          Padding(
+          Text(
+            'INGREDIENTS TO GO',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.white70,
+              letterSpacing: 10.0,
+            ),
+          ),
+        ],
+      ),
+      centerTitle: true,
+      toolbarHeight: 120,
+    ),
+    body: Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/image3.jpeg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        SafeArea(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 100),
                 const Text(
                   'Welcome!',
                   style: TextStyle(
@@ -277,8 +281,9 @@ if (response.statusCode == 200) {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
