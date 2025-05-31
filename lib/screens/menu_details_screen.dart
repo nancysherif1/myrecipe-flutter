@@ -20,8 +20,8 @@ class MenuDetailsScreen extends StatelessWidget {
     }
 
     final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/cart/'),
-      // Uri.parse('http://172.20.10.3:8000/api/cart/'),
+      // Uri.parse('http://127.0.0.1:8000/api/cart/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',

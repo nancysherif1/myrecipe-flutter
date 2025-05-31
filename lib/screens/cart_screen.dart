@@ -33,8 +33,8 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/cart/'),
-      // Uri.parse('http://172.20.10.3:8000/api/cart/'),
+      // Uri.parse('http://127.0.0.1:8000/api/cart/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',
@@ -63,8 +63,8 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     final response = await http.delete(
-      Uri.parse('http://127.0.0.1:8000/api/cart/item/$itemId/'),
-      // Uri.parse('http://172.20.10.3:8000/api/cart/item/$itemId/'),
+      // Uri.parse('http://127.0.0.1:8000/api/cart/item/$itemId/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/item/$itemId/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',
@@ -92,8 +92,8 @@ class _CartScreenState extends State<CartScreen> {
     if (token == null) return;
 
     final response = await http.delete(
-      Uri.parse('http://127.0.0.1:8000/api/cart/clear/'),
-      // Uri.parse('http://172.20.10.3:8000/api/cart/clear/'),
+      // Uri.parse('http://127.0.0.1:8000/api/cart/clear/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/clear/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',
@@ -120,8 +120,8 @@ class _CartScreenState extends State<CartScreen> {
     String? token = prefs.getString('token');
 
     final response = await http.put(
-      Uri.parse('http://127.0.0.1:8000/api/cart/item/$itemId/'),
-      // Uri.parse('http://172.20.10.3:8000/api/cart/item/$itemId/'),
+      // Uri.parse('http://127.0.0.1:8000/api/cart/item/$itemId/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/item/$itemId/'),
       headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json',
@@ -160,8 +160,8 @@ Future<void> proceedToCheckout() async {
   }
 
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:8000/api/cart/checkout/'),
-    // Uri.parse('http://172.20.10.3:8000/api/cart/checkout/'),
+    // Uri.parse('http://127.0.0.1:8000/api/cart/checkout/'),
+    Uri.parse('http://172.20.10.3:8000/api/cart/checkout/'),
     headers: {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',

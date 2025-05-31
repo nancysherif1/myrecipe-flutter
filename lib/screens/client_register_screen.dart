@@ -32,8 +32,8 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
       _errorMessage = '';
     });
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/register/customer/');
-    // final url = Uri.parse('http://172.20.10.3:8000/api/register/customer/');
+    // final url = Uri.parse('http://127.0.0.1:8000/api/register/customer/');
+    final url = Uri.parse('http://172.20.10.3:8000/api/register/customer/');
 
     final body = {
       "user": {

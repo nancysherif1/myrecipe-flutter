@@ -37,8 +37,8 @@ class LoginScreenState extends State<LoginScreen> {
     //final Uri url = Uri.parse('http://172.20.10.3:8000/api/login/');
 
     //For Web
-    final Uri url = Uri.parse('http://127.0.0.1:8000/api/login/');
-    // final Uri url = Uri.parse('http://172.20.10.3:8000/api/login/');
+    // final Uri url = Uri.parse('http://127.0.0.1:8000/api/login/');
+    final Uri url = Uri.parse('http://172.20.10.3:8000/api/login/');
     try {
       final response = await http.post(
         url,
@@ -62,8 +62,8 @@ if (response.statusCode == 200) {
 
   // Try vendor orders API
   final vendorResponse = await http.get(
-    Uri.parse('http://127.0.0.1:8000/api/vendor/orders/'),
-    // Uri.parse('http://172.20.10.3:8000/api/vendor/orders/'),
+    // Uri.parse('http://127.0.0.1:8000/api/vendor/orders/'),
+    Uri.parse('http://172.20.10.3:8000/api/vendor/orders/'),
     headers: headers,
   );
 
@@ -75,8 +75,8 @@ if (response.statusCode == 200) {
   } else {
     // If not vendor, try loading customer menus
     final customerMenuResponse = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/customer/menus/'),
-      // Uri.parse('http://172.20.10.3:8000/api/customer/menus/'),
+      // Uri.parse('http://127.0.0.1:8000/api/customer/menus/'),
+      Uri.parse('http://172.20.10.3:8000/api/customer/menus/'),
       headers: headers,
     );
 
