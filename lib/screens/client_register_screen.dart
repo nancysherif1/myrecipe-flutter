@@ -58,7 +58,7 @@ class _ClientRegisterScreenState extends State<ClientRegisterScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 201) {
-  Navigator.pushReplacementNamed(context, '/home');
+  Navigator.pushReplacementNamed(context, '/');
 } else {
         setState(() {
           _errorMessage = 'Registration failed';

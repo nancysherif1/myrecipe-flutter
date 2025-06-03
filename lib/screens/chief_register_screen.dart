@@ -56,7 +56,7 @@ class _ChiefRegisterScreenState extends State<ChiefRegisterScreen> {
       if (!mounted) return; // <<<<<< ADD THIS LINE
 
       if (response.statusCode == 201) {
-  Navigator.pushReplacementNamed(context, '/orders');
+  Navigator.pushReplacementNamed(context, '/');
 } else {
         setState(() {
           _errorMessage = 'Registration failed';
