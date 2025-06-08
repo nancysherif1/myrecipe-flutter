@@ -132,16 +132,16 @@ Widget build(BuildContext context) {
           Text(
             'MY RECIPE',
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28,
               color: Colors.white,
-              letterSpacing: 15.0,
+              letterSpacing: 14.0,
               fontFamily: 'Roboto',
             ),
           ),
           Text(
             'INGREDIENTS TO GO',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               color: Colors.white70,
               letterSpacing: 10.0,
             ),
@@ -265,19 +265,19 @@ Widget build(BuildContext context) {
                     ),
                   ),
                 ),
-                Center(
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ),
+                // Center(
+                //   child: TextButton(
+                //     onPressed: () {},
+                //     child: const Text(
+                //       'Forgot Password?',
+                //       style: TextStyle(
+                //         color: Colors.white70,
+                //         fontSize: 16,
+                //         decoration: TextDecoration.underline,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
