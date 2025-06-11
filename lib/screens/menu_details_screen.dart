@@ -60,12 +60,12 @@ class MenuDetailsScreen extends StatelessWidget {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final String vendorName = args?['vendorName'] ?? 'Unknown Vendor';
     final Map<String, dynamic> menu = args?['menu'] ?? {};
-    final String menuName = menu['menuName'] ?? 'Unnamed Menu';
+    // final String menuName = menu['menuName'] ?? 'Unnamed Menu';
     final List<dynamic> items = menu['items'] ?? [];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$menuName - $vendorName'),
+        title: Text('$vendorName'),
         leading: const BackButton(),
       ),
       body: Column(
