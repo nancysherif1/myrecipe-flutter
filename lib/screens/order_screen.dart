@@ -29,8 +29,8 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Future<void> _fetchOrders(String token) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/vendor/orders/');  
-    // final url = Uri.parse('http://172.20.10.3:8000/api/vendor/orders/');  
+    // final url = Uri.parse('http://127.0.0.1:8000/api/vendor/orders/');  
+    final url = Uri.parse('http://172.20.10.3:8000/api/vendor/orders/');  
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
