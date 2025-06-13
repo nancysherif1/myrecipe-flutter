@@ -11,6 +11,11 @@ import 'package:my_recipe_front/screens/favorite_screen.dart';
 import 'package:my_recipe_front/screens/recent_orders_screen.dart';
 import 'package:my_recipe_front/screens/cart_screen.dart'; // Ensure this file exists and contains CartScreen class
 import 'package:my_recipe_front/screens/track_order_screen.dart';
+import 'package:my_recipe_front/screens/profile_screen.dart';
+import 'package:my_recipe_front/screens/create_menu_screen.dart';
+import 'package:my_recipe_front/screens/vendor_menu_detail_screen.dart';
+import 'package:my_recipe_front/screens/edit_menu_screen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -40,6 +45,10 @@ class MyApp extends StatelessWidget {
 '/recentOrders': (context) => const RecentOrdersScreen(),
         '/cart': (context) => const CartScreen(), 
         '/trackOrder': (context) => const TrackOrderScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/createMenu': (context) => const CreateMenuScreen(),
+        '/vendorMenuDetails': (context) => const VendorMenuDetailScreen(),
+        '/editMenu': (context) => const EditMenuScreen(),
       },
     );
   }

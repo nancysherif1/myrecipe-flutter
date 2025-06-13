@@ -69,11 +69,22 @@ String formatTime(String isoString) {
   }
 }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Orders List")),
+      appBar: AppBar(
+        title: const Text("Orders List"),
+        actions: [
+          // Profile button added here
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+            tooltip: 'Profile',
+          ),
+        ],
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -119,7 +130,7 @@ child: ListTile(
       Text(order['description'] ?? 'No details provided'),
       const SizedBox(height: 4),
       Text(
-        '\$$totalPrice',
+        '\LE$totalPrice',
         style: const TextStyle(
           color: Colors.green,
           fontWeight: FontWeight.bold,
