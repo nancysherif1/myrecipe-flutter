@@ -123,9 +123,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF4A0D1F),
-        child: const Icon(Icons.add),
+        child: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+        Icon(Icons.add, color: Colors.white),
+          ],
+        ),
         onPressed: () => Navigator.pushNamed(context, '/createMenu')
-            .then((_) => fetchVendorMenus()),
+        .then((_) => fetchVendorMenus()),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

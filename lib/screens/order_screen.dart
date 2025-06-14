@@ -83,6 +83,14 @@ String formatTime(String isoString) {
             },
             tooltip: 'Profile',
           ),
+           // Logout button
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/'); // Navigates to login
+            },
+            tooltip: 'Logout',
+          ),
         ],
       ),
       body: _isLoading
