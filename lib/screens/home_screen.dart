@@ -18,9 +18,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final FocusNode focusNode = FocusNode();
 
   final Map<String, String> _imageCache = {}; // Cache image paths
- String username = '';
+  String username = '';
 
-   @override
+  @override
   void initState() {
     super.initState();
     fetchUsername(); // ✅ Call fetchUsername here
@@ -33,6 +33,63 @@ class _HomeScreenState extends State<HomeScreen> {
     vendors = args?['menus'] ?? [];
     filteredVendors = vendors;
   }
+
+  // Generate consistent rating based on vendor/menu name
+  double generateRating(String vendorName, String menuName) {
+    final combined = '$vendorName$menuName';
+    final hash = combined.hashCode.abs();
+    
+    // Generate ratings between 3.0 and 5.0
+    final ratings = [3.0, 3.5, 4.0, 4.5, 5.0];
+    return ratings[hash % ratings.length];
+  }
+
+  // Build star rating widget
+  Widget buildStarRating(double rating) {
+    List<Widget> stars = [];
+    
+    for (int i = 1; i <= 5; i++) {
+      if (i <= rating.floor()) {
+        // Full star
+        stars.add(const Icon(
+          Icons.star,
+          color: Colors.amber,
+          size: 16,
+        ));
+      } else if (i - 0.5 <= rating) {
+        // Half star
+        stars.add(const Icon(
+          Icons.star_half,
+          color: Colors.amber,
+          size: 16,
+        ));
+      } else {
+        // Empty star
+        stars.add(const Icon(
+          Icons.star_border,
+          color: Colors.amber,
+          size: 16,
+        ));
+      }
+    }
+    
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...stars,
+        const SizedBox(width: 4),
+        Text(
+          rating.toString(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
 Future<void> fetchUsername() async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('token');
@@ -136,7 +193,6 @@ void updateSearch(String query) {
     }).toList();
   });
 }
-
 
   Future<String> getImagePathForVendor(String vendorName) async {
     if (_imageCache.containsKey(vendorName)) {
@@ -302,19 +358,23 @@ void updateSearch(String query) {
                                   },
                                 ),
                               ),
-                              // Positioned(
-                              //   top: 8,
-                              //   right: 8,
-                              //   child: Container(
-                              //     decoration: const BoxDecoration(
-                              //       color: Colors.white,
-                              //       shape: BoxShape.circle,
-                              //     ),
-                              //     padding: const EdgeInsets.all(6),
-                              //     child: const Icon(Icons.shopping_cart,
-                              //         color: Colors.black87, size: 20),
-                              //   ),
-                              // ),
+                              // Rating stars positioned at bottom left
+                              Positioned(
+                                bottom: 8,
+                                right: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    // ignore: deprecated_member_use
+                                    color: Colors.black.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: buildStarRating(
+                                    generateRating(vendorName, menu['menuName'] ?? 'Default')
+                                  ),
+                                ),
+                              ),
+                              // Menu name overlay at bottom
                               // Positioned(
                               //   bottom: 0,
                               //   left: 0,

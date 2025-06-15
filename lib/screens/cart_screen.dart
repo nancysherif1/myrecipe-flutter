@@ -15,11 +15,18 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   List<dynamic> cartItems = [];
   bool isLoading = true;
+  final TextEditingController _commentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchCartItems();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchCartItems() async {
@@ -147,55 +154,65 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-Future<void> proceedToCheckout() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? token = prefs.getString('token');
+  Future<void> proceedToCheckout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
 
-  if (token == null) {
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('You must be logged in to checkout.')),
-    );
-    return;
-  }
-
-  final response = await http.post(
-    // Uri.parse('http://127.0.0.1:8000/api/cart/checkout/'),
-    Uri.parse('http://172.20.10.3:8000/api/cart/checkout/'),
-    headers: {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      "payment_method": "Cash", // You can make this dynamic later
-    }),
-  );
-
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    final Map<String, dynamic> orderData = responseData['order'];
-
-    setState(() {
-      cartItems.clear();
-    });
-
-    // Navigate to checkout screen with order data
-    Navigator.push(
+    if (token == null) {
       // ignore: use_build_context_synchronously
-      context,
-      MaterialPageRoute(
-        builder: (context) => CheckoutScreen(orderData: orderData),
-      ),
-    );
-  } else {
-    developer.log('Checkout failed', name: 'CartScreen', error: response.body);
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Checkout failed. Please try again.')),
-    );
-  }
-}
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be logged in to checkout.')),
+      );
+      return;
+    }
 
+    // Prepare the request body
+    Map<String, dynamic> requestBody = {
+      "payment_method": "Cash", // You can make this dynamic later
+    };
+
+    // Add comment if it's not empty
+    if (_commentController.text.trim().isNotEmpty) {
+      requestBody["comment"] = _commentController.text.trim();
+    }
+
+    final response = await http.post(
+      // Uri.parse('http://127.0.0.1:8000/api/cart/checkout/'),
+      Uri.parse('http://172.20.10.3:8000/api/cart/checkout/'),
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> orderData = responseData['order'];
+
+      setState(() {
+        cartItems.clear();
+      });
+
+      // Clear the comment field after successful checkout
+      _commentController.clear();
+
+      // Navigate to checkout screen with order data
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => CheckoutScreen(orderData: orderData),
+        ),
+      );
+    } else {
+      developer.log('Checkout failed', name: 'CartScreen', error: response.body);
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Checkout failed. Please try again.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,57 +231,94 @@ Future<void> proceedToCheckout() async {
           ? const Center(child: CircularProgressIndicator())
           : cartItems.isEmpty
               ? const Center(child: Text('Your cart is empty.'))
-              : ListView.builder(
-                  itemCount: cartItems.length,
-                  itemBuilder: (context, index) {
-                    final item = cartItems[index];
-                    final int itemId = item['item'];
-                    final int quantity = item['quantity'];
-                    return ListTile(
-                      title: Text(item['item_name']),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${item['vendor_name']} • LE${double.parse(item['item_price']).toStringAsFixed(2)}'),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.remove_circle_outline),
-                                onPressed: () => updateItemQuantity(itemId, quantity - 1),
-                              ),
-                              Text('$quantity'),
-                              IconButton(
-                                icon: const Icon(Icons.add_circle_outline),
-                                onPressed: () => updateItemQuantity(itemId, quantity + 1),
-                              ),
-                            ],
-                          )
-                        ],
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: cartItems.length,
+                        itemBuilder: (context, index) {
+                          final item = cartItems[index];
+                          final int itemId = item['item'];
+                          final int quantity = item['quantity'];
+                          return ListTile(
+                            title: Text(item['item_name']),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('${item['vendor_name']} • LE${double.parse(item['item_price']).toStringAsFixed(2)}'),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline),
+                                      onPressed: () => updateItemQuantity(itemId, quantity - 1),
+                                    ),
+                                    Text('$quantity'),
+                                    IconButton(
+                                      icon: const Icon(Icons.add_circle_outline),
+                                      onPressed: () => updateItemQuantity(itemId, quantity + 1),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.remove_circle, color: Colors.red),
+                              onPressed: () => removeItem(itemId),
+                            ),
+                          );
+                        },
                       ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.remove_circle, color: Colors.red),
-                        onPressed: () => removeItem(itemId),
+                    ),
+                    // Comment section
+                    if (cartItems.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: Colors.grey, width: 0.5),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Order Comments (Optional)',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: _commentController,
+                              maxLines: 3,
+                              decoration: const InputDecoration(
+                                hintText: 'Add special instructions, delivery notes, or any comments...',
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.all(12),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
+                  ],
                 ),
-                bottomNavigationBar: cartItems.isNotEmpty
-    ? Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: proceedToCheckout,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text(
-            'Proceed to Checkout',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-      )
-    : null,
-
+      bottomNavigationBar: cartItems.isNotEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: proceedToCheckout,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  'Proceed to Checkout',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

@@ -200,13 +200,15 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                       final order = orders[index];
                       final items = order['items'] as List<dynamic>? ?? [];
                       final status = order['status'] ?? 'Unknown';
+                      final comment = order['comment'] ?? 'Unknown';
                       final orderDate = order['orderDate'] ?? order['order_date'] ?? '';
                       final totalAmount = order['totalAmount']?.toString() ?? order['total_amount']?.toString() ?? '0.00';
                       final orderId = order['orderId']?.toString() ?? order['order_id']?.toString() ?? 'N/A';
 
-                      return Card(
+                        return Card(
                         margin: const EdgeInsets.only(bottom: 16),
                         elevation: 4,
+                        color: Colors.white, // Set background color to white
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -262,11 +264,80 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
                                 ],
                               ),
                               const SizedBox(height: 8),
+                              
+                              // Add pending image if status is pending
+                              if (status.toLowerCase() == 'pending') ...[
+                                const SizedBox(height: 12),
+                                Center(
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      // boxShadow: [
+                                      //   BoxShadow(
+                                      //     color: Colors.grey.withOpacity(0.3),
+                                      //     spreadRadius: 2,
+                                      //     blurRadius: 5,
+                                      //     offset: const Offset(0, 3),
+                                      //   ),
+                                      // ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.asset(
+                                        'assets/images/pending.jpg',
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          // Fallback widget if image fails to load
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              // ignore: deprecated_member_use
+                                              color: Colors.orange.withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: const Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.schedule,
+                                                    size: 48,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  SizedBox(height: 8),
+                                                  Text(
+                                                    'Order Pending',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.orange,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                              
                               Text(
                                 'Order Date: ${orderDate.split('T')[0]}',
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                'Comment: ${comment}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 0, 0, 0),
                                 ),
                               ),
                               const SizedBox(height: 12),

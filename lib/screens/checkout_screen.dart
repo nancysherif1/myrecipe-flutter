@@ -21,6 +21,35 @@ class CheckoutScreen extends StatelessWidget {
             Text("Order Date: ${orderData['order_date']}"),
             Text("Status: ${orderData['status']}"),
             Text("Payment Method: ${orderData['payment_method']}"),
+            
+            // Display comment if it exists
+            if (orderData['comment'] != null && orderData['comment'].toString().isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Order Comments:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        orderData['comment'].toString(),
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            
             const SizedBox(height: 16),
             const Text("Items:", style: TextStyle(fontWeight: FontWeight.bold)),
             ...items.map((item) => ListTile(
